@@ -54,6 +54,10 @@ toolbox.register("compile", gp.compile, pset=pset)
 def evalSymbReg(individual, points):
     # Transform the tree expression in a callable function
     func = toolbox.compile(expr=individual)
+    # MSE
+    errors = (abs(func(point[0]) - point[1]) for point in dataset)
+    return math.fsum(errors),
+    # Squared Errors
     sqerrors = ((func(point[0]) - point[1])**2 for point in dataset)
     return math.fsum(sqerrors) / len(points),
 
@@ -80,7 +84,7 @@ mstats.register("max", numpy.max)
 
 # Launching the evolution
 def evolution():
-    pop = toolbox.population(n=300)
+    pop = toolbox.population(n=1000)
     hof = tools.HallOfFame(1)
     pop, log = algorithms.eaSimple(pop, toolbox, 0.7, 0.0, 50, stats=mstats,
                                    halloffame=hof, verbose=True)
